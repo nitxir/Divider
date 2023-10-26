@@ -65,7 +65,7 @@ endmodule
 
    You can find an example waveform plot below that shows the behavior of the `divider` module during simulation:
 
-   ![Waveform Example](waveform.png)
+   ![Waveform Example](waveform.jpeg)
 
 2. **Coverage Reports**:
 
