@@ -81,6 +81,6 @@ The provided design code and testbench are open-source and can be used and modif
 ## Resources Used
 
 Cadence Tool suite:
-1. NC-verilog.
+1. NC-verilog/Simvision.
 2. IMC/Xcelium.
 
