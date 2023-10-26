@@ -73,16 +73,14 @@ endmodule
 
    ![Coverage Example](coverage.png)
 
-Make sure to replace "waveform_example.png" and "coverage_report.png" with the actual filenames or URLs of your waveform and coverage plot images.
 
 ## License
 
 The provided design code and testbench are open-source and can be used and modified under appropriate licensing terms. Please refer to the license file (if available) for details.
 
-## Acknowledgments
+## Resources Used
 
-If your project uses any external libraries or references, acknowledge them here with appropriate references or links.
+Cadence Tool suite:
+1)NC-verilog
+2)IMC/Xcelium
 
----
-
-Feel free to customize this README to include additional details specific to your project or to reference any external resources. A well-documented README helps users understand, use, and test your 8-bit unsigned divider design effectively.
