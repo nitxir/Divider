@@ -59,10 +59,6 @@ module divider_tb;
 endmodule
 ```
 
-## License
-
-The provided design code and testbench are open-source and can be used and modified under appropriate licensing terms. Please refer to the license file (if available) for details.
-
 ## Acknowledgments
 
 If your project uses any external libraries or references, acknowledge them here with appropriate references or links.
