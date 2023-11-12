@@ -59,7 +59,7 @@ module divider_tb;
 endmodule
 ```
 
-## Adding Waveform and Coverage Plots
+## Waveform and Coverage Plots
 
 1. **Waveform Plots**:
 
