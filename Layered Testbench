@@ -1,0 +1,171 @@
+class transaction;
+  rand bit start;
+  rand bit [7:0] A;
+  rand bit [7:0] B;
+  
+  bit [7:0] D;
+  bit [7:0] R;
+  bit ok;
+  bit err;
+  
+  function void display(string name);
+    $display("----------------------");
+    $display("%s",name);
+    $display("----------------------");
+    $display(" start=%0d,A=%0d,B=%0d",start,A,B);
+    $display("D = %0d,R = %0d,ok=%0d,err=%0d",D,R,ok,err);
+    $display("----------------------");
+  endfunction 
+endclass
+
+class generator;
+  transaction trans;
+  mailbox gen2driv;
+  
+  function new (mailbox gen2driv);
+    this.gen2driv = gen2driv;
+  endfunction
+  
+  task main();
+    repeat(1)
+      begin
+        trans = new();
+        trans.randomize();
+        trans.display("generator");
+        gen2driv.put(trans);
+      end
+  endtask
+endclass
+
+class driver;
+  virtual intf vif;
+  mailbox gen2driv;
+  
+  function new (virtual intf vif, mailbox gen2driv);
+    this.vif=vif;
+    this.gen2driv=gen2driv;
+  endfunction
+  
+  task main;
+    repeat(1)
+      begin
+        transaction trans;
+        gen2driv.get(trans);
+         
+        vif.start<=trans.start;
+        vif.A<=trans.A;
+        vif.B<=trans.B;
+        
+        trans.D = vif.D;
+        trans.R = vif.R;
+        trans.ok = vif.ok;
+        trans.err = vif.err;
+        
+        trans.display("driver");
+      end
+  endtask
+endclass
+
+class monitor;
+  virtual intf vif;
+  mailbox mon2scb;
+  
+  function new(virtual intf vif , mailbox mon2scb);
+    this.vif=vif;
+    this.mon2scb=mon2scb;
+  endfunction
+  
+  task main;
+    repeat(1)
+      #4
+      begin
+        transaction trans;
+        trans=new();
+        trans.start = vif.start;
+        trans.A = vif.A;
+        trans.B = vif.B;
+        trans.D = vif.D;
+        trans.R = vif.R;
+        trans.ok = vif.ok;
+        trans.err = vif.err;
+        mon2scb.put(trans);
+        trans.display("monitor");
+      end
+  endtask
+endclass
+
+
+
+interface intf(input clk,reset);
+  logic start;
+  logic A;
+  logic B;
+  logic D;
+  logic R;
+  logic ok;
+  logic err;
+endinterface
+
+
+class environment;
+  generator        gen;
+  driver           driv;
+  monitor          mon;
+  mailbox m1;
+  mailbox m2;
+  virtual intf vif;
+  function new(virtual intf vif);
+    this.vif=vif;
+    m1 = new();
+    m2= new();
+    gen = new(m1);
+    driv = new(vif,m1);
+    mon = new(vif,m2);
+  endfunction
+  task test();
+    fork 
+      gen.main();
+      driv.main();
+      mon.main();
+    join 
+  endtask
+  
+  task run;
+    test();
+  endtask
+  
+endclass
+    
+
+program test(intf i_intf);
+  
+  environment env;
+  initial 
+    begin
+      env = new(i_intf);
+      env.run();
+    end
+endprogram
+
+module tbench_top;
+  
+  bit clk;
+  bit reset;
+  
+  intf i_intf(clk,reset);
+  divider h1 (
+    .clk(i_intf.clk),
+    .reset(i_intf.reset),
+    .start(i_intf.start),
+    .A(i_intf.A),
+    .B(i_intf.B),
+    .D(i_intf.D),
+    .R(i_intf.R),
+    .ok(i_intf.ok),
+    .err(i_intf.err)
+  );
+  test t1(i_intf);
+  
+  always #2 clk=~clk;
+  
+endmodule
