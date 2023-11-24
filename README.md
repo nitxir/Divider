@@ -84,3 +84,5 @@ Cadence Tool suite:
 1. NC-verilog/Simvision.
 2. IMC/Xcelium.
 
+Results![output](https://github.com/nitxir/Divider/assets/149069003/2ad8de08-4a90-411a-930c-caabb48f18d4)
+
